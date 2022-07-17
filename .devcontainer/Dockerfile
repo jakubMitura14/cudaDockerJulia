@@ -70,7 +70,7 @@ RUN apt-key add /var/cuda-repo-ubuntu2004-11-3-local/7fa2af80.pub
 ################################################################################
 # Remove documentation to save hard drive space
 #  https://askubuntu.com/questions/129566/remove-documentation-to-save-hard-drive-space
-COPY etc/dpkg/dpkg.cfg.d/01_nodoc /etc/dpkg/dpkg.cfg.d/01_nodoc
+#COPY etc/dpkg/dpkg.cfg.d/01_nodoc /etc/dpkg/dpkg.cfg.d/01_nodoc
 
 ################################################################################
 # - update apt, set up certs, run netselect to get fast mirror
