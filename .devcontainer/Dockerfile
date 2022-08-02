@@ -1,6 +1,6 @@
 ## { Mitura start}
 #FROM nvidia/cuda:11.3.1-devel-ubuntu20.04
-FROM nvidia/cuda:11.3.1-cudnn8-devel-ubuntu20.04
+FROM nvidia/cudagl:11.3.0-devel-ubuntu20.04
 
 ################################################################################
 # Prevent apt-get from prompting for keyboard choice
@@ -131,7 +131,8 @@ RUN apt-get update -q -y && \
     pkg-config\
     software-properties-common\
     libhdf5-serial-dev\
-    git && \
+    git \
+    ffmpeg && \
     apt-get install -q -y --reinstall ca-certificates
 
 
@@ -158,7 +159,7 @@ ENV PATH $JULIA_PATH/bin:$PATH
 ENV JULIA_GPG 3673DF529D9049477F76B37566E3C7DC03D6E495
 
 # https://julialang.org/downloads/
-ENV JULIA_VERSION 1.7.3
+ENV JULIA_VERSION 1.7.1
 
 RUN set -eux; \
 	\
@@ -253,8 +254,13 @@ RUN chmod -R ugo+rwx /tmp/
 # RUN chown -R ${NB_USER}  /dev/tty0
 # RUN chmod -R ugo+rwx /dev/tty0
 
+
+#from https://github.com/JuliaPlots/Plots.jl/issues/4192
+RUN export JULIA_SSL_NO_VERIFY_HOSTS='github.com'
+RUN export JULIA_DEPOT_PATH="$HOME/packages"
+# ENV JULIA_DEPOT_PATH= 1
+
 #RUN chown ${NB_USER} ${HOME} ${HOME}/data
-USER ${NB_USER}
 
 #login to github cli 
 # COPY mytoken.txt .
@@ -263,6 +269,9 @@ RUN git config --global user.name "Jakub Mitura"
 RUN git config --global user.email "jakub.mitura14@gmail.com"
 RUN git config -l
 
+RUN julia -e 'using Pkg; ENV["PLOTS_DEFAULT_BACKEND"] = "PlotlyJS"; Pkg.add(["Plots", "MedPipe3D"]); Pkg.instantiate();Pkg.precompile()'
+
+USER ${NB_USER}
 
 RUN git clone https://github.com/jakubMitura14/MedPipe3DTutorial.git ${HOME}/data/mainCode
 
