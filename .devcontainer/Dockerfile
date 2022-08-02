@@ -235,7 +235,11 @@ RUN set -eux; \
 ENV NB_USER sliceruser
 ENV NB_UID 1000
 ENV HOME /home/${NB_USER}
-
+ENV USER_HOME_DIR /home/${USER}
+ENV JULIA_DEPOT_PATH ${USER_HOME_DIR}/.julia
+ENV NOTEBOOK_DIR ${USER_HOME_DIR}/notebooks
+ENV JULIA_NUM_THREADS 100
+ENV JULIA_SSL_NO_VERIFY_HOSTS 'github.com'
 
 
 RUN adduser --disabled-password \
@@ -256,8 +260,8 @@ RUN chmod -R ugo+rwx /tmp/
 
 
 #from https://github.com/JuliaPlots/Plots.jl/issues/4192
-RUN export JULIA_SSL_NO_VERIFY_HOSTS='github.com'
-RUN export JULIA_DEPOT_PATH="$HOME/packages"
+# RUN export JULIA_SSL_NO_VERIFY_HOSTS='github.com'
+#RUN export JULIA_DEPOT_PATH="$HOME/packages"
 # ENV JULIA_DEPOT_PATH= 1
 
 #RUN chown ${NB_USER} ${HOME} ${HOME}/data
@@ -269,11 +273,22 @@ RUN git config --global user.name "Jakub Mitura"
 RUN git config --global user.email "jakub.mitura14@gmail.com"
 RUN git config -l
 
-RUN julia -e 'using Pkg; ENV["PLOTS_DEFAULT_BACKEND"] = "PlotlyJS"; Pkg.add(["Plots", "MedPipe3D"]); Pkg.instantiate();Pkg.precompile()'
+# RUN julia -e 'using Pkg; ENV["PLOTS_DEFAULT_BACKEND"] = "PlotlyJS"; Pkg.add(["Plots", "MedPipe3D"]); Pkg.instantiate();Pkg.precompile()'
 
 USER ${NB_USER}
 
+
+RUN julia -e 'import Pkg; Pkg.update()' && \
+         julia -e 'import Pkg; Pkg.add("Plots"); using Plots' && \
+         julia -e 'import Pkg; Pkg.add("Distributions"); using Distributions' && \
+         julia -e 'import Pkg; Pkg.add("IJulia"); using IJulia'
+
 RUN git clone https://github.com/jakubMitura14/MedPipe3DTutorial.git ${HOME}/data/mainCode
+
+RUN apt-get install -y build-essential python3.8 python3-pip python3-dev
+RUN pip3 -q install pip --upgrade
+
+RUN pip3 install jupyter
 
 #CMD ["/bin/bash"]
 ################################################################################
