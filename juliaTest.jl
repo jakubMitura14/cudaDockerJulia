@@ -493,3 +493,9 @@ calculateAndDisplay(preparedDict,mainScrollDat, conf, numberToLookFor,CuArray(li
 saveManualModif(fid,patienGroupName , mainScrollDat)
 
 close(fid)
+
+
+"/home/.julia/artifacts/b069ad81d556658ea64a543367e128e535fab269/lib/libgobject-2.0.so"
+rm -r /home/.julia/artifacts/b069ad81d556658ea64a543367e128e535fab269/lib/
+
+Pkg.add(url="https://github.com/JuliaPlots/Plots.jl.git")
