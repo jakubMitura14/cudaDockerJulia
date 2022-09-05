@@ -30,11 +30,11 @@ RUN apt-get update && apt-get install -y \
 
 
 ## installing github CLI - https://github.com/cli/cli/blob/trunk/docs/install_linux.md
-# RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-# RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-# RUN sudo apt update
-# RUN sudo apt install gh
-# RUN apt autoremove python3 -y
+RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+RUN sudo apt update
+RUN sudo apt install gh
+RUN apt autoremove python3 -y
 
 RUN mkdir /app
 WORKDIR /app
@@ -215,14 +215,13 @@ RUN git config --global user.name "Jakub Mitura"
 RUN git config --global user.email "jakub.mitura14@gmail.com"
 RUN git config -l
 
-RUN julia -e ' using Pkg; Pkg.add(["ChainRulesCore", "Zygote","Enzyme", "CUDA","Lux","Optimisers" ,"NNlib"]); Pkg.instantiate();Pkg.precompile()'
-
+# RUN julia -e 'using Pkg; ENV["PLOTS_DEFAULT_BACKEND"] = "PlotlyJS"; Pkg.add(["Plots", "MedPipe3D"]); Pkg.instantiate();Pkg.precompile()'
 
 #from https://discourse.julialang.org/t/configuring-docker-image-of-julia-julia-cant-see-installed-packages/48790/5
-#RUN julia -e 'import Pkg; Pkg.update()'
+RUN julia -e 'import Pkg; Pkg.update()'
 #RUN julia -e 'import Pkg; Pkg.add("Plots"); using Plots'
 
-#RUN git clone https://github.com/jakubMitura14/MedPipe3DTutorial.git ${HOME}/data/mainCode
+RUN git clone https://github.com/jakubMitura14/MedPipe3DTutorial.git ${HOME}/data/mainCode
 
 ################################################################################
 # Build-time metadata as defined at http://label-schema.org
