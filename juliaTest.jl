@@ -1,23 +1,25 @@
+#LD_LIBRARY_PATH="" julia -q
 using Pkg
-#Pkg.add(url="https://github.com/jakubMitura14/MedPipe3D.jl.git")
 Pkg.add(url="https://github.com/jakubMitura14/MedPipe3D.jl.git")
-
+Pkg.add(url="https://github.com/jakubMitura14/MedEye3d.jl.git")
+using MedPipe3D
 using MedEye3d
 using Distributions
 using Clustering
 using IrrationalConstants
 using ParallelStencil
-using MedPipe3D.LoadFromMonai, MedPipe3D.HDF5saveUtils,MedPipe3D.visualizationFromHdf5, MedPipe3D.distinctColorsSaved
+using MedPipe3D.LoadFromMonai, MedPipe3D.HDF5saveUtils,MedEye3d.visualizationFromHdf5, MedEye3d.distinctColorsSaved
 using CUDA
 using HDF5,Colors
+using Plots
+
 #]add Plots MedEye3d Distributions Clustering IrrationalConstants ParallelStencil CUDA HDF5 MedEval3D MedPipe3D Colors
 #add ProgressMeter StaticArrays BSON Distributed Flux Hyperopt MedEye3d Distributions Clustering IrrationalConstants ParallelStencil CUDA HDF5 MedEval3D MedPipe3D Colors
 
 #directory where we want to store our HDF5 that we will use
-pathToHDF5="/home/data/smallDataSet.hdf5"
-data_dir = "/home/data/Task09_Spleen/"
+pathToHDF5="/workspaces/cudaDockerJulia/data/smallDataSet.hdf5"
+data_dir = "/workspaces/cudaDockerJulia/data/Task09_Spleen/"
 fid = h5open(pathToHDF5, "w")
-
 
 
 #representing number that is the patient id in this dataset
@@ -37,7 +39,7 @@ zipped=map(tupl -> (replace(tupl[1], "._" => ""), replace(tupl[2], "._" => "")),
 tupl=zipped[patentNum]
 
 #proper loading
-loaded = LoadFromMonai.loadBySitkromImageAndLabelPaths(tupl[1],tupl[2])
+loaded = MedPipe3D.LoadFromMonai.loadBySitkromImageAndLabelPaths(tupl[1],tupl[2])
 #!!!!!!!!!! important if you are just creating the hdf5 file  do it with "w" option otherwise do it with "r+"
 #fid = h5open(pathToHDF5, "r+") 
 gr= getGroupOrCreate(fid, patienGroupName)
