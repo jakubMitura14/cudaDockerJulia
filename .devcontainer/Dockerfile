@@ -3,7 +3,7 @@ ARG IMAGE=nvidia/cudagl:11.3.0-devel-ubuntu20.04
 FROM $IMAGE AS base
 
 ARG JULIA_RELEASE=1.8
-ARG JULIA_VERSION=1.8.0
+ARG JULIA_VERSION=1.8.1
 
 
 # julia
