@@ -611,37 +611,7 @@ ENV	FFMPEG_version=4.2.2 \
 RUN pip3 install --user meson ffmpeg-progress-yield
 RUN apt-get install ninja-build meson
 
-# ## libvmaf https://github.com/Netflix/vmaf
-# RUN \
-#         if which meson || false; then \
-#         echo "Building VMAF." && \
-#         DIR=/tmp/vmaf && \
-#         mkdir -p ${DIR} && \
-#         cd ${DIR} && \
-#         curl -sLO https://github.com/Netflix/vmaf/archive/v${LIBVMAF_VERSION}.tar.gz && \
-#         tar -xz --strip-components=1 -f v${LIBVMAF_VERSION}.tar.gz && \
-#         cd /tmp/vmaf/libvmaf && \
-#         meson build --buildtype release --prefix=${PREFIX} && \
-#         ninja -vC build && \
-#         ninja -vC build install && \
-#         mkdir -p ${PREFIX}/share/model/ && \
-#         cp -r /tmp/vmaf/model/* ${PREFIX}/share/model/ && \
-#         rm -rf ${DIR}; \
-#         else \
-#         echo "VMAF skipped."; \
-#         fi
 
-# RUN git clone https://github.com/Homebrew/brew ~/.linuxbrew/Homebrew \
-# && mkdir ~/.linuxbrew/bin \
-# && ln -s ../Homebrew/bin/brew ~/.linuxbrew/bin \
-# && eval $(~/.linuxbrew/bin/brew shellenv) \
-# && brew --version
-# # ENV PATH=$HOME/.linuxbrew/bin:$PATH
-# # ENV PATH="/usr/local/bin:$PATH"
-# # RUN echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.bash_profile
-# # ENV PATH="/usr/local/bin:$PATH"
-# ENV PATH="${PATH}:$HOME/.linuxbrew/bin"
-# RUN brew install libvmaf
 
 ## Download ffmpeg https://ffmpeg.org/
 RUN  \
@@ -723,95 +693,12 @@ RUN \
 
 
 
-
-############
-
-
-RUN apt-get update -q -y && \
-        DEBIAN_FRONTEND=noninteractive \
-        apt-get install -q -y --allow-change-held-packages\
-        vim net-tools curl \
-        libgl1-mesa-glx \
-        xserver-xorg-video-dummy \
-        libxrender1 \
-        libpulse0 \
-        libpulse-mainloop-glib0  \
-        libnss3  \
-        libxcomposite1 \
-        libxcursor1 \
-        libfontconfig1 \
-        libxrandr2 \
-        libasound2 \
-        libglu1 \
-        x11vnc \
-        awesome \
-        jq \
-        nautilus\
-        jupyter-core\
-        zip\
-        p7zip-full\
-        apt-utils\
-        octave\
-        kmod\
-        zlib1g\
-        python-dev\
-        bzip2\
-        cmake\
-        cuda-command-line-tools-11.3 \
-        libcublas-11.3 \
-        cuda-nvrtc-11.3\
-        libcufft-11.3 \
-        libcurand-11.3 \
-        libcusolver-11.3 \
-        libcusparse-11.3 \
-        libfreetype6-dev \
-        curl\
-        libzmq3-dev \
-        pkg-config\
-        software-properties-common\
-        libhdf5-serial-dev\
-        git \
-        at-spi2-core \
-        libgtk-3-dev \
-        xauth \
-        xvfb \
-        ninja-build \
-        python3 \
-        python3-pip \
-        python3-setuptools \
-        python3-wheel \
-        ninja-build \
-        wget \
-        doxygen \
-        autoconf \
-        automake \
-        cmake \
-        g++ \
-        gcc \
-        pkg-config \
-        make \
-        nasm \
-        xxd \
-        yasm \
-        ffmpeg && \
-        apt-get install -q -y --reinstall ca-certificates
-
 ###############3from https://github.com/jrottenberg/ffmpeg/blob/main/docker-images/5.1/ubuntu2004/Dockerfile
 RUN curl -s -L https://julialang-s3.julialang.org/bin/linux/x64/${JULIA_RELEASE}/julia-${JULIA_VERSION}-linux-x86_64.tar.gz | \
     tar -C /usr/local -x -z --strip-components=1 -f -
 
 
 RUN export DISPLAY=:0
-# RUN glxinfo | grep OpenGL
-# RUN apt-get update && apt-get install -y xterm
-
-# RUN julia -e 'import Pkg; Pkg.add("MedEye3d");Pkg.API.precompile()';
-# RUN julia -e 'import Pkg; Pkg.add("MedPipe3D");Pkg.API.precompile()';
-
-
-# RUN curl -s -L https://julialang-s3.julialang.org/bin/linux/x64/${JULIA_RELEASE}/julia-${JULIA_VERSION}-linux-x86_64.tar.gz | \
-#     tar -C /usr/local -x -z --strip-components=1 -f -
-
 
 # system-wide packages
 
@@ -840,6 +727,9 @@ ENV JULIA_DEPOT_PATH=/data:/usr/local/share/julia
 ENV JULIA_HISTORY=/data/logs/repl_history.jl
 
 ENV JULIA_CUDA_USE_BINARYBUILDER=false
+
+ARG         LD_LIBRARY_PATH=""
+
 
 RUN git config --global user.name "Jakub Mitura"
 RUN git config --global user.email "jakub.mitura14@gmail.com"
